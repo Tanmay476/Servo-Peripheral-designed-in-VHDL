@@ -1,0 +1,19 @@
+# Quartus generated directories
+db/
+incremental_db/
+output_files/
+
+# Compiled/bitstream files
+*.sof
+*.pof
+*.rbf
+*.jic
+
+# Logs and reports
+*.rpt
+*.smsg
+*.jou
+
+# Backup/temp
+*.bak
+*~

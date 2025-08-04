@@ -1,0 +1,177 @@
+WIDTH=16;
+DEPTH=2048;
+
+ADDRESS_RADIX=HEX;
+DATA_RADIX=HEX;
+
+CONTENT BEGIN
+0000: B800; --         LOADI   0
+0001: 1100; --         STORE   Pos0
+0002: 1101; --         STORE   Pos1
+0003: 1102; --         STORE   Pos2
+0004: 1103; --         STORE   Pos3
+0005: 1104; --         STORE   Dir0
+0006: 1105; --         STORE   Dir1
+0007: 1106; --         STORE   Dir2
+0008: 1107; --         STORE   Dir3
+0009: 090C; --         LOAD    P0PER
+000A: 1108; --         STORE   Cnt0
+000B: 090D; --         LOAD    P1PER
+000C: 1109; --         STORE   Cnt1
+000D: 090E; --         LOAD    P2PER
+000E: 110A; --         STORE   Cnt2
+000F: 090F; --         LOAD    P3PER
+0010: 110B; --         STORE   Cnt3
+0011: 9802; --         OUT     Timer              ; reset timer to 0
+0012: 9002; --         IN      Timer
+0013: 4012; --         JZERO   WaitTick           ; spin until &gt;=1 (≈0.1 s elapsed)
+0014: 0908; --         LOAD    Cnt0
+0015: 6FFF; --         ADDI    -1
+0016: 1108; --         STORE   Cnt0
+0017: 381B; --         JPOS    S0_Done            ; still counting
+0018: 8031; --         CALL    Servo0_Step
+0019: 090C; --         LOAD    P0PER
+001A: 1108; --         STORE   Cnt0
+001B: 0909; --         LOAD    Cnt1
+001C: 6FFF; --         ADDI    -1
+001D: 1109; --         STORE   Cnt1
+001E: 3822; --         JPOS    S1_Done
+001F: 804A; --         CALL    Servo1_Step
+0020: 090D; --         LOAD    P1PER
+0021: 1109; --         STORE   Cnt1
+0022: 090A; --         LOAD    Cnt2
+0023: 6FFF; --         ADDI    -1
+0024: 110A; --         STORE   Cnt2
+0025: 3829; --         JPOS    S2_Done
+0026: 8063; --         CALL    Servo2_Step
+0027: 090E; --         LOAD    P2PER
+0028: 110A; --         STORE   Cnt2
+0029: 090B; --         LOAD    Cnt3
+002A: 6FFF; --         ADDI    -1
+002B: 110B; --         STORE   Cnt3
+002C: 3830; --         JPOS    S3_Done
+002D: 807C; --         CALL    Servo3_Step
+002E: 090F; --         LOAD    P3PER
+002F: 110B; --         STORE   Cnt3
+0030: 2811; --         JUMP    MainLoop           ; repeat forever
+0031: 0904; --         LOAD    Dir0
+0032: 403C; --         JZERO   S0_Up
+0033: 0900; --         LOAD    Pos0
+0034: 6FFF; --         ADDI    -1
+0035: 1100; --         STORE   Pos0
+0036: 3847; --         JPOS    S0_Send            ; &gt;0 still going down
+0037: B800; --         LOADI   0
+0038: 1100; --         STORE   Pos0
+0039: B800; --         LOADI   0
+003A: 1104; --         STORE   Dir0               ; change direction to up
+003B: 2847; --         JUMP    S0_Send
+003C: 0900; --         LOAD    Pos0
+003D: 6801; --         ADDI    1
+003E: 1100; --         STORE   Pos0
+003F: 0900; --         LOAD    Pos0
+0040: 2110; --         SUB     MaxCodeVal
+0041: 3843; --         JPOS    S0_ClampTop        ; &gt;Max -&gt; clamp &amp; flip
+0042: 2847; --         JUMP    S0_Send
+0043: 0910; --         LOAD    MaxCodeVal
+0044: 1100; --         STORE   Pos0
+0045: B801; --         LOADI   1
+0046: 1104; --         STORE   Dir0               ; now go down
+0047: 0900; --         LOAD    Pos0
+0048: 9850; --         OUT     Servo0
+0049: 8800; --         RETURN
+004A: 0905; --         LOAD    Dir1
+004B: 4055; --         JZERO   S1_Up
+004C: 0901; --         LOAD    Pos1
+004D: 6FFF; --         ADDI    -1
+004E: 1101; --         STORE   Pos1
+004F: 3860; --         JPOS    S1_Send
+0050: B800; --         LOADI   0
+0051: 1101; --         STORE   Pos1
+0052: B800; --         LOADI   0
+0053: 1105; --         STORE   Dir1
+0054: 2860; --         JUMP    S1_Send
+0055: 0901; --         LOAD    Pos1
+0056: 6801; --         ADDI    1
+0057: 1101; --         STORE   Pos1
+0058: 0901; --         LOAD    Pos1
+0059: 2110; --         SUB     MaxCodeVal
+005A: 385C; --         JPOS    S1_ClampTop
+005B: 2860; --         JUMP    S1_Send
+005C: 0910; --         LOAD    MaxCodeVal
+005D: 1101; --         STORE   Pos1
+005E: B801; --         LOADI   1
+005F: 1105; --         STORE   Dir1
+0060: 0901; --         LOAD    Pos1
+0061: 9851; --         OUT     Servo1
+0062: 8800; --         RETURN
+0063: 0906; --         LOAD    Dir2
+0064: 406E; --         JZERO   S2_Up
+0065: 0902; --         LOAD    Pos2
+0066: 6FFF; --         ADDI    -1
+0067: 1102; --         STORE   Pos2
+0068: 3879; --         JPOS    S2_Send
+0069: B800; --         LOADI   0
+006A: 1102; --         STORE   Pos2
+006B: B800; --         LOADI   0
+006C: 1106; --         STORE   Dir2
+006D: 2879; --         JUMP    S2_Send
+006E: 0902; --         LOAD    Pos2
+006F: 6801; --         ADDI    1
+0070: 1102; --         STORE   Pos2
+0071: 0902; --         LOAD    Pos2
+0072: 2110; --         SUB     MaxCodeVal
+0073: 3875; --         JPOS    S2_ClampTop
+0074: 2879; --         JUMP    S2_Send
+0075: 0910; --         LOAD    MaxCodeVal
+0076: 1102; --         STORE   Pos2
+0077: B801; --         LOADI   1
+0078: 1106; --         STORE   Dir2
+0079: 0902; --         LOAD    Pos2
+007A: 9852; --         OUT     Servo2
+007B: 8800; --         RETURN
+007C: 0907; --         LOAD    Dir3
+007D: 4087; --         JZERO   S3_Up
+007E: 0903; --         LOAD    Pos3
+007F: 6FFF; --         ADDI    -1
+0080: 1103; --         STORE   Pos3
+0081: 3892; --         JPOS    S3_Send
+0082: B800; --         LOADI   0
+0083: 1103; --         STORE   Pos3
+0084: B800; --         LOADI   0
+0085: 1107; --         STORE   Dir3
+0086: 2892; --         JUMP    S3_Send
+0087: 0903; --         LOAD    Pos3
+0088: 6801; --         ADDI    1
+0089: 1103; --         STORE   Pos3
+008A: 0903; --         LOAD    Pos3
+008B: 2110; --         SUB     MaxCodeVal
+008C: 388E; --         JPOS    S3_ClampTop
+008D: 2892; --         JUMP    S3_Send
+008E: 0910; --         LOAD    MaxCodeVal
+008F: 1103; --         STORE   Pos3
+0090: B801; --         LOADI   1
+0091: 1107; --         STORE   Dir3
+0092: 0903; --         LOAD    Pos3
+0093: 9853; --         OUT     Servo3
+0094: 8800; --         RETURN
+[0095..00FF] : 0000; -- [empty memory]
+0100: 0000; -- Pos0:        DW      0
+0101: 0000; -- Pos1:        DW      0
+0102: 0000; -- Pos2:        DW      0
+0103: 0000; -- Pos3:        DW      0
+0104: 0000; -- Dir0:        DW      0            ; 0=up, nonzero=down
+0105: 0000; -- Dir1:        DW      0
+0106: 0000; -- Dir2:        DW      0
+0107: 0000; -- Dir3:        DW      0
+0108: 0000; -- Cnt0:        DW      0            ; countdown (ticks) to next update
+0109: 0000; -- Cnt1:        DW      0
+010A: 0000; -- Cnt2:        DW      0
+010B: 0000; -- Cnt3:        DW      0
+010C: 0002; -- P0PER:       DW      2            ; 0.2 s
+010D: 0004; -- P1PER:       DW      4            ; 0.4 s
+010E: 0006; -- P2PER:       DW      6            ; 0.6 s
+010F: 0008; -- P3PER:       DW      8            ; 0.8 s
+0110: 007F; -- MaxCodeVal:  DW      127          ; *** match HSPG 0–127 command range ***
+[0111..07FF] : 0000; -- [empty memory]
+END;
+
