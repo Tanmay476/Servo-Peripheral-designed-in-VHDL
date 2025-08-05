@@ -2,6 +2,20 @@
 
 This project implements a four-channel PWM controller for hobby servo motors as a custom peripheral on an FPGA. The controller is written in VHDL and integrates with the 16-bit SCOMP microprocessor on a Terasic DE10-Lite FPGA board. Through memory-mapped I/O registers, the SCOMP CPU can command up to four RC servos by writing position values that the hardware translates into PWM signals. Each servo output generates a stable 50 Hz pulse train (20 ms period). 
 
- The FPGA design generates such pulses with sub-microsecond accuracy, leveraging hardware counters and a PLL-derived clock to meet servo timing requirements. Once the CPU sets a servo position, the custom hardware module autonomously produces the corresponding PWM waveform, freeing the CPU from continuous timing tasks. his project showcases skills in digital design (VHDL), FPGA development, and hardware/software co-design – including timing analysis to ensure correct pulse widths, use of FPGA IP for clock generation, and interfacing a custom peripheral with a CPU’s bus. The system was tested on real hardware with four servos, confirming that the FPGA and VHDL logic can accurately control servo movements as programmed in the SCOMP assembly code.
+The FPGA design generates such pulses with sub-microsecond accuracy, leveraging hardware counters and a PLL-derived clock to meet servo timing requirements. Once the CPU sets a servo position, the custom hardware module autonomously produces the corresponding PWM waveform, freeing the CPU from continuous timing tasks. his project showcases skills in digital design (VHDL), FPGA development, and hardware/software co-design – including timing analysis to ensure correct pulse widths, use of FPGA IP for clock generation, and interfacing a custom peripheral with a CPU’s bus. The system was tested on real hardware with four servos, confirming that the FPGA and VHDL logic can accurately control servo movements as programmed in the SCOMP assembly code.
 
- 
+The MIF target file in VHDL is written in SCOMP and is designed to test 4 servos, by rotating them at different delays between rotations and hence at different speeds. TP1 on the DE-10 daughterboard rotates by an increment every 1s, TP2 every 4s, TP3 every 8s, TP4 every 10s.
+
+Quick Start
+
+Ensure you have Intel Quartus Prime installed (see Dependencies).
+Clone this repository and open the provided Quartus project file
+Compile the project in Quartus (target device: DE10 MAX 10 FPGA) to synthesize the VHDL design.
+Connect the DE10 board via USB-Blaster and use Quartus Programmer to upload the compiled design.
+After programming, the SCOMP soft-core CPU and servo controller peripheral are running on the FPGA. Connect one or more standard RC servos to the designated output pins (TP1 through four on the DE-10 Daugtherboard on the DE10 to observe glitch-free, high-resolution servo movement controlled by the provided SCOMP firmware.
+
+Dependencies
+
+Intel Quartus Prime (Lite Edition) – Free FPGA development tool (tested with version 18.1).
+Terasic DE10-Lite FPGA board – Target hardware (Intel MAX 10 FPGA platform).
+ModelSim (Intel FPGA Edition) – Optional tool for simulation.
