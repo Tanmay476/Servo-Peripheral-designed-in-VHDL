@@ -2,6 +2,7 @@
 db/
 incremental_db/
 output_files/
+.qsys_edit/
 
 # Compiled/bitstream files
 *.sof
@@ -13,7 +14,26 @@ output_files/
 *.rpt
 *.smsg
 *.jou
+*.summary
+*.done
+*.qws
 
-# Backup/temp
+# Simulation files
+*.vho
+*.sft
+*_modelsim.xrf
+
+# Backup/temp files
 *.bak
 *~
+*.tmp
+
+# Debug files
+debug.mif
+c5_pin_model_dump.txt
+
+# OS and editor files
+.DS_Store
+Thumbs.db
+*.swp
+*.swo
